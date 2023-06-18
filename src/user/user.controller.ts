@@ -15,13 +15,14 @@ export class UserController {
   @Get('findOne')
   async findOne(@Query() query: User): Promise<any> {
     const res = await this.userSrvice.findOne(query);
+    if (!res) throw new HttpException('用户不存在', 401);
     return res;
   }
 
   @Get('findAll')
   async findAll(): Promise<any> {
     const res = await this.userSrvice.findAll();
-    return res;
+    return res || [];
   }
 
   @Post('admin')
