@@ -32,7 +32,7 @@ export class UserController {
     if (res.password !== body.password) {
       throw new HttpException('密码错误', 401);
     }
-    return '登录成功！';
+    return res;
   }
 
   @Post('admin/register')
