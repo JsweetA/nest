@@ -14,19 +14,19 @@ export class UserService {
     return 'userService';
   }
 
-  async login(option: object) {
-    let res = await this.userRepository.find(option);
-    return res;
-  }
-
-  async register(option: object) {
-    await this.userRepository.save(option);
-    return 'ok';
-  }
-
   async findOne(option: object) {
     const res = await this.userRepository.findOne({where:option});
     // const res = await this.userRepository.query(`SELECT * FROM USER WHERE username=${option.username}`);
     return res;
   };
+
+  async findAll() {
+    const res = await this.userRepository.find();
+    return res;
+  };
+
+  async register(option: object) {
+    await this.userRepository.save(option);
+    return 'ok';
+  }
 }
