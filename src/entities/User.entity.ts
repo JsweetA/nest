@@ -1,10 +1,25 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm'
-
+import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 @Entity()
 export class User {
-    @PrimaryColumn() // 自动生成id
-    username: string
+  @ApiProperty({
+    type: Number,
+    description: 'id',
+  })
+  @PrimaryGeneratedColumn() // 自动生成id
+  id: number;
 
-    @Column()
-    password: string
+  @ApiProperty({
+    type: String,
+    description: '用户名',
+  })
+  @Column()
+  username: string;
+
+  @ApiProperty({
+    type: String,
+    description: '密码',
+  })
+  @Column()
+  password: string;
 }
