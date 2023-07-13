@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { Tenant } from '../../entities/tenant.entity';
 import { Service } from 'src/entities/service.entity';
 import { Role } from 'src/entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+// import { HttpException } from 'output-swagger';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,7 @@ export class AuthService {
     // 如果是undefined或者 '' 就直接 返回全部
     const attr = e
       ? {
-          where: { tk: { id: e } },
+          where: { tk: { tk: e } },
           relations: {
             tk: true,
           },
@@ -50,13 +51,23 @@ export class AuthService {
   }
 
   async addService(e) {
+    e.mark = e?.tk + '-' + e?.key;
+    e.tk = await this.useTenant.findOne({ where: { tk: e?.tk } });
+    e.tk = e.tk.id;
+
     const res = await this.useService.save(e);
     return res;
   }
 
   async deleteService(e) {
-    const res = await this.useService.delete(e);
-    return res;
+    try {
+      const res = await this.useService.delete(e);
+      return res;
+    } catch (e) {
+      console.log(e);
+
+      return null;
+    }
   }
 
   // 角色
@@ -71,6 +82,10 @@ export class AuthService {
   }
 
   async addRole(e) {
+    let svcMark = await this.useService.findOne({ where: { id: e?.svc } });
+    e.mark = svcMark.mark + '-' + e?.key;
+    console.log(e);
+
     const res = await this.useRole.save(e);
     return res;
   }
@@ -79,5 +94,4 @@ export class AuthService {
     const res = await this.useRole.delete(e);
     return res;
   }
-  //
 }

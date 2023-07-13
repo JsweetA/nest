@@ -21,7 +21,7 @@ import { AuthModule } from './module/auth/auth.module';
       port: 3306,
       username: 'hyaaaa',
       password: '123456',
-      database: 'nest_user',
+      database: 'sys',
       synchronize: true,
       entities: [__dirname + '/entities/*.js'],
     }),

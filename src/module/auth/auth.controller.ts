@@ -6,6 +6,7 @@ import {
   Query,
   Delete,
   Param,
+  HttpException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Tenant } from 'src/entities/tenant.entity';
@@ -18,13 +19,13 @@ export class AuthController {
 
   @Get('tenant')
   async tenantList() {
-    const res = this.service.getTenantList();
+    const res = await this.service.getTenantList();
     return res;
   }
 
   @Post('tenant')
   async addTenant(@Body() body: Tenant) {
-    const res = this.service.addTenant(Object.assign(new Tenant(), body));
+    const res = await this.service.addTenant(Object.assign(new Tenant(), body));
     return res;
   }
 
@@ -32,32 +33,51 @@ export class AuthController {
   @Get('service')
   async serviceList(@Query('tenant') tenant) {
     if (tenant === 'undefined' || tenant === '') tenant = null;
-    const res = this.service.getServiceListBytenant(tenant);
-    return res;
+    const res = await this.service.getServiceListBytenant(tenant);
+    return res.map((i) => {
+      return {
+        ...i,
+        tk: i?.tk?.tk,
+      };
+    });
   }
   @Post('service')
   async addService(@Body() body) {
-    const res = this.service.addService(Object.assign(new Service(), body));
+    const res = await this.service.addService(
+      Object.assign(new Service({}), body),
+    );
     return res;
   }
   @Delete('service/:svcId')
   async deleteService(@Param('svcId') id) {
-    const res = this.service.deleteService({ id });
+    const res = await this.service.deleteService({ id });
+    if (!res) throw new HttpException('删除失败', 500);
     return 'ok';
   }
 
   // 角色
   @Get('service/:svcId/role')
   async roleListBy(@Param('svcId') id) {
-    const res = this.service.getRoleList(id);
-    return res;
+    const res = await this.service.getRoleList(id);
+    return res.map((i) => {
+      return {
+        ...i,
+        svc: i?.svc?.id,
+      };
+    });
   }
 
   @Post('service/:svcId/role')
   async addRole(@Param('svcId') id, @Body() body) {
-    const res = this.service.addRole(
+    const res = await this.service.addRole(
       Object.assign(new Role(), { svc: id, ...body }),
     );
+    return 'ok';
+  }
+
+  @Delete('service/:svcId/role/:roleId')
+  async deleteRole(@Param() path) {
+    const res = await this.service.deleteRole({ id: path.roleId });
     return 'ok';
   }
 }
