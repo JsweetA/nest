@@ -72,6 +72,9 @@ devDependencies:
   cz-conventional-changelog:
     specifier: ^3.3.0
     version: registry.npmmirror.com/cz-conventional-changelog@3.3.0
+  cz-git:
+    specifier: ^1.7.0
+    version: registry.npmmirror.com/cz-git@1.7.0
   eslint:
     specifier: ^8.0.1
     version: registry.npmmirror.com/eslint@8.44.0
@@ -3105,6 +3108,13 @@ packages:
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
+    dev: true
+
+  registry.npmmirror.com/cz-git@1.7.0:
+    resolution: {integrity: sha512-A9ix8zJtRfuj7aXrlS2K6SqrFy/9VcoHOeZKEYM0qG4h++9p4/vkeEjHpwxHN0S2ARtbmlKypjrhVkFtFnBG1Q==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/cz-git/-/cz-git-1.7.0.tgz}
+    name: cz-git
+    version: 1.7.0
+    engines: {node: '>=v12.20.0'}
     dev: true
 
   registry.npmmirror.com/dargs@7.0.0:
