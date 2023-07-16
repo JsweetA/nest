@@ -12,6 +12,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { logger } from './middleware/logger.middleware';
 
 import { AuthModule } from './module/auth/auth.module';
+import { AccountService } from './module/account/account.service';
+import { AccountController } from './module/account/account.controller';
+import { AccountModule } from './module/account/account.module';
 
 @Module({
   imports: [
@@ -27,9 +30,11 @@ import { AuthModule } from './module/auth/auth.module';
     }),
 
     AuthModule,
+
+    AccountModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, AccountController],
+  providers: [AppService, AccountService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

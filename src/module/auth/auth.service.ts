@@ -1,7 +1,8 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Tenant } from '../../entities/tenant.entity';
 import { Service } from 'src/entities/service.entity';
 import { Role } from 'src/entities/role.entity';
+import { Account } from 'src/entities/account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 // import { HttpException } from 'output-swagger';
@@ -15,6 +16,8 @@ export class AuthService {
     private readonly useService: Repository<Service>,
     @InjectRepository(Role)
     private readonly useRole: Repository<Role>,
+    @InjectRepository(Account)
+    private readonly useAccount: Repository<Account>,
   ) {}
 
   // 获取地区
@@ -92,6 +95,17 @@ export class AuthService {
 
   async deleteRole(e) {
     const res = await this.useRole.delete(e);
+    return res;
+  }
+
+  // 账号
+  async accountList() {
+    const res = await this.useAccount.find();
+    return res;
+  }
+
+  async addAccount(e) {
+    const res = await this.useAccount.save(e);
     return res;
   }
 }

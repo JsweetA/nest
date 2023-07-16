@@ -8,7 +8,6 @@ import { Role } from './role.entity';
 export class Service extends BaseEntity {
   constructor(e) {
     super();
-    console.log(e);
   }
 
   @Column()

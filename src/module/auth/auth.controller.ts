@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { Tenant } from 'src/entities/tenant.entity';
 import { Service } from 'src/entities/service.entity';
 import { Role } from 'src/entities/role.entity';
+import { Account } from 'src/entities/account.entity';
 
 @Controller('sys')
 export class AuthController {
@@ -79,5 +80,23 @@ export class AuthController {
   async deleteRole(@Param() path) {
     const res = await this.service.deleteRole({ id: path.roleId });
     return 'ok';
+  }
+
+  // 账号
+  @Get('acc')
+  async accountListPage() {
+    const res = await this.service.accountList();
+    return {
+      content: res,
+    };
+  }
+
+  @Post('acc')
+  async addAcount(@Body() body) {
+    console.log(body);
+    const res = await this.service.addAccount(
+      Object.assign(new Account(), body),
+    );
+    return res;
   }
 }
