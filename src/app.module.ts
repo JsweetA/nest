@@ -10,11 +10,8 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { logger } from './middleware/logger.middleware';
-
-import { AuthModule } from './module/auth/auth.module';
-import { AccountService } from './module/account/account.service';
-import { AccountController } from './module/account/account.controller';
-import { AccountModule } from './module/account/account.module';
+import { MqttController } from './module/mqtt/mqtt.controller';
+import { MqttModule } from './module/mqtt/mqtt.module';
 
 @Module({
   imports: [
@@ -24,17 +21,16 @@ import { AccountModule } from './module/account/account.module';
       port: 3306,
       username: 'hyaaaa',
       password: '123456',
-      database: 'sys',
+      database: 'mqtt',
       synchronize: true,
       entities: [__dirname + '/entities/*.js'],
     }),
+    MqttModule,
 
-    AuthModule,
-
-    AccountModule,
+   
   ],
-  controllers: [AppController, AccountController],
-  providers: [AppService, AccountService],
+  controllers: [AppController, MqttController, ],
+  providers: [AppService, ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
