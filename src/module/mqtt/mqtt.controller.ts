@@ -11,7 +11,7 @@ export class MqttController {
       console.log('Connected to MQTT server');
       // 订阅主题
       this.mqttClient.subscribe(['aaa'], (t, e) => {
-        console.log(t, e);
+        // console.log(t, e);
       });
     });
     this.mqttClient.on('message', (e) => {
