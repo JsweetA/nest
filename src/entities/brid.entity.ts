@@ -1,16 +1,15 @@
-import { Entity, Column,PrimaryGeneratedColumn,  } from 'typeorm';
-
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Account  {
-   @PrimaryGeneratedColumn() // 自动生成id
+export class Brid {
+  @PrimaryGeneratedColumn() // 自动生成id
   id: number;
 
   /**
    * 电池电压
    */
   @Column()
-  batteryVcc: string; 
+  batteryVcc: string;
 
   /**
    * 工作状态

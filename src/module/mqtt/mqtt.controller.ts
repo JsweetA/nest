@@ -14,8 +14,8 @@ export class MqttController {
         // console.log(t, e);
       });
     });
-    this.mqttClient.on('message', (e) => {
-      console.log(e);
+    this.mqttClient.on('message', (topic, message) => {
+      console.log(JSON.parse(message));
     });
 
     return 'ok';
