@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MqttController } from './mqtt.controller';
+import { BridController } from './brid.controller';
 
 describe('MqttController', () => {
-  let controller: MqttController;
+  let controller: BridController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [MqttController],
+      controllers: [BridController],
     }).compile();
 
-    controller = module.get<MqttController>(MqttController);
+    controller = module.get<BridController>(BridController);
   });
 
   it('should be defined', () => {

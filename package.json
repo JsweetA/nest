@@ -23,16 +23,20 @@
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/microservices": "^10.1.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/platform-socket.io": "^10.1.0",
     "@nestjs/swagger": "^7.0.11",
     "@nestjs/typeorm": "^10.0.0",
+    "@nestjs/websockets": "^10.1.0",
     "class-validator": "^0.14.0",
     "mqtt": "^4.3.7",
     "mysql2": "^3.3.5",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^4.6.3",
-    "typeorm": "^0.3.16"
+    "typeorm": "^0.3.16",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
