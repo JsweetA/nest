@@ -9,6 +9,7 @@ import {
 import { BridService } from './brid.service';
 import * as mqtt from 'mqtt';
 import WebSocket, { WebSocketServer } from 'ws';
+import { debounce } from '../../utils/debunce';
 
 @Controller('brid')
 export class BridController {
@@ -56,7 +57,8 @@ export class BridController {
 
     this.client.on('connect', (err) => {
       if (err) {
-        this.client.subscribe(['aaa']);
+        this.client.subscribe(['/huas/admin', 'a']);
+
         console.log('mqtt success');
       } else {
         console.log('连接失败', err);
@@ -64,8 +66,23 @@ export class BridController {
     });
 
     this.client.on('message', async (topic, data) => {
-      await this.service.saveRecord(JSON.parse(data.toString()));
-      this.ws.send(JSON.stringify({ topic, data: data.toString() }));
+      if (topic === 'a') {
+        console.log(data.toString());
+        this.ws.send(data.toString());
+      } else {
+        debounce(() => {
+          const res = JSON.parse(data.toString()) as any;
+          const value = res.devices[0].services[0].data;
+          console.log(value);
+          this.service.saveRecord(value);
+          this.ws.send(
+            JSON.stringify({
+              topic,
+              data: { ...value, createAt: new Date().getTime() },
+            }),
+          );
+        });
+      }
     });
   }
   // 获取所有
