@@ -48,5 +48,5 @@ export class Brid {
   counter: number;
 
   @Column()
-  createAt: number = new Date().getTime() as any;
+  createAt: string = new Date().getTime() as any;
 }

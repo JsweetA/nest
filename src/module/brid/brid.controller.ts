@@ -1,26 +1,25 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import {
-  Payload,
-  Ctx,
-  MqttContext,
-  MessagePattern,
-  ClientProxy,
-} from '@nestjs/microservices';
+
 import { BridService } from './brid.service';
 import * as mqtt from 'mqtt';
 import WebSocket, { WebSocketServer } from 'ws';
-import { debounce } from '../../utils/debunce';
+
+import { Brid } from 'src/entities/brid.entity';
+import { parseTime } from '../../utils/time';
 
 @Controller('brid')
 export class BridController {
+  // 单例模式
   client: mqtt.Client;
   ws: WebSocket;
   constructor(private readonly service: BridService) {
+    this.initMqtt();
     this.initWs();
   }
 
   // 建立websocket连接
   async initWs() {
+    // 创建websocket服务
     const wss = new WebSocketServer({
       port: 3002,
       perMessageDeflate: {
@@ -45,7 +44,6 @@ export class BridController {
     });
     wss.on('connection', (ws) => {
       this.ws = ws;
-      this.initMqtt();
       ws.on('error', console.error);
       console.log('ws success');
     });
@@ -57,6 +55,7 @@ export class BridController {
 
     this.client.on('connect', (err) => {
       if (err) {
+        // 订阅mqtt
         this.client.subscribe(['/huas/admin', 'a']);
 
         console.log('mqtt success');
@@ -65,30 +64,33 @@ export class BridController {
       }
     });
 
+    // 监听消息并且通过websocket发送给前端
     this.client.on('message', async (topic, data) => {
-      if (topic === 'a') {
-        console.log(data.toString());
-        this.ws.send(data.toString());
-      } else {
-        debounce(() => {
-          const res = JSON.parse(data.toString()) as any;
-          const value = res.devices[0].services[0].data;
-          console.log(value);
-          this.service.saveRecord(value);
-          this.ws.send(
-            JSON.stringify({
-              topic,
-              data: { ...value, createAt: new Date().getTime() },
-            }),
-          );
-        });
+      const res = JSON.parse(data.toString()).devices[0].services[0]
+        .data as any;
+      // const res = JSON.parse(data.toString());
+      this.service.saveRecord(Object.assign(new Brid(), res));
+
+      try {
+        this.ws.send(
+          JSON.stringify({ ...res, createAt: new Date().getTime() }),
+        );
+      } catch (e) {
+        console.log(e);
       }
     });
   }
+
   // 获取所有
   @Get()
   async recordList() {
     const res = await this.service.recordList();
-    return res;
+    res.reverse();
+    return res.map((i) => {
+      return {
+        ...i,
+        createAt: parseTime(i.createAt, '{y}-{m}-{d} {h}:{i}'),
+      };
+    });
   }
 }
